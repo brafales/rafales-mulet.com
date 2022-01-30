@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://rafales-mulet.com/sitemap.xml
