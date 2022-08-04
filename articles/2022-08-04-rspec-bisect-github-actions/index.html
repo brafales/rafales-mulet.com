@@ -3,10 +3,10 @@
 <meta http-equiv=content-language content="en">
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta http-equiv=x-ua-compatible content="ie=edge">
-<title>Load testing the Bloom & Wild Platform for peaks &middot; Bernat Ràfales</title>
-<meta name=title content="Load testing the Bloom & Wild Platform for peaks &middot; Bernat Ràfales">
+<title>Bisecting flaky tests with rspec and GitHub Actions &#183; Bernat Ràfales</title>
+<meta name=title content="Bisecting flaky tests with rspec and GitHub Actions &#183; Bernat Ràfales">
 <meta name=description content>
-<link rel=canonical href=https://rafales-mulet.com/articles/2022-01-18-load-testing-the-bloom-wild-platform-for-peaks/>
+<link rel=canonical href=https://rafales-mulet.com/articles/2022-08-04-rspec-bisect-github-actions/>
 <link type=text/css rel=stylesheet href=/css/schemes/ocean.min.ff17c50528c7a4a8a8bb8ec41272d63eb936ecefb9ccfa6db45cd1f5cd8b1becf8606745f751ee0d322ac80c9cb96e58aa699b38aa44cff9d2a8b3ff4f05a7b5.css integrity="sha512-/xfFBSjHpKiou47EEnLWPrk27O+5zPpttFzR9c2LG+z4YGdF91HuDTIqyAycuW5YqmmbOKpEz/nSqLP/TwWntQ==">
 <link type=text/css rel=stylesheet href=/css/compiled/main.min.51037225bb3c65887773b052da1e38f105db8f3d9aa6a34ba3c5c40c88fb309724f8cc5ed2871adc7e55dacab9b36c60ce7aa7a61dff2cc638f8b435c898d5a8.css integrity="sha512-UQNyJbs8ZYh3c7BS2h448QXbjz2apqNLo8XEDIj7MJck+Mxe0oca3H5V2sq5s2xgznqnph3/LMY4+LQ1yJjVqA==">
 <script>function loadPreferredAppearance(){localStorage.preferredAppearance==="dark"||!("preferredAppearance"in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches?document.documentElement.classList.add("dark"):document.documentElement.classList.remove("dark")}function setPreferredAppearance(a){a=="default"?localStorage.removeItem("preferredAppearance"):localStorage.preferredAppearance=a,loadPreferredAppearance()}loadPreferredAppearance(),window.matchMedia("(prefers-color-scheme: dark)").addListener(loadPreferredAppearance)</script>
@@ -14,16 +14,16 @@
 <link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
 <link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
 <link rel=manifest href=/site.webmanifest>
-<meta property="og:title" content="Load testing the Bloom & Wild Platform for peaks">
+<meta property="og:title" content="Bisecting flaky tests with rspec and GitHub Actions">
 <meta property="og:description" content>
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://rafales-mulet.com/articles/2022-01-18-load-testing-the-bloom-wild-platform-for-peaks/"><meta property="article:section" content="articles">
-<meta property="article:published_time" content="2022-01-18T00:00:00+00:00">
-<meta property="article:modified_time" content="2022-01-18T00:00:00+00:00">
+<meta property="og:url" content="https://rafales-mulet.com/articles/2022-08-04-rspec-bisect-github-actions/"><meta property="article:section" content="articles">
+<meta property="article:published_time" content="2022-08-04T00:00:00+00:00">
+<meta property="article:modified_time" content="2022-08-04T00:00:00+00:00">
 <meta name=twitter:card content="summary">
-<meta name=twitter:title content="Load testing the Bloom & Wild Platform for peaks">
+<meta name=twitter:title content="Bisecting flaky tests with rspec and GitHub Actions">
 <meta name=twitter:description content>
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","articleSection":"Articles","name":"Load testing the Bloom \u0026 Wild Platform for peaks","headline":"Load testing the Bloom \u0026 Wild Platform for peaks","description":"","inLanguage":"en","author":{"@type":"Person","name":"Bernat Ràfales"},"creator":{"@type":"Person","name":"Bernat Ràfales"},"copyrightHolder":"Bernat Ràfales","copyrightYear":"2022","dateCreated":"2022-01-18T00:00:00\u002b00:00","datePublished":"2022-01-18T00:00:00\u002b00:00","dateModified":"2022-01-18T00:00:00\u002b00:00","url":"https:\/\/rafales-mulet.com\/articles\/2022-01-18-load-testing-the-bloom-wild-platform-for-peaks\/","wordCount":"0"}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","articleSection":"Articles","name":"Bisecting flaky tests with rspec and GitHub Actions","headline":"Bisecting flaky tests with rspec and GitHub Actions","description":"","inLanguage":"en","author":{"@type":"Person","name":"Bernat Ràfales"},"creator":{"@type":"Person","name":"Bernat Ràfales"},"copyrightHolder":"Bernat Ràfales","copyrightYear":"2022","dateCreated":"2022-08-04T00:00:00\u002b00:00","datePublished":"2022-08-04T00:00:00\u002b00:00","dateModified":"2022-08-04T00:00:00\u002b00:00","url":"https:\/\/rafales-mulet.com\/articles\/2022-08-04-rspec-bisect-github-actions\/","wordCount":"0"}</script>
 <meta name=generator content="Hugo 0.91.2">
 <meta name=author content="Bernat Ràfales">
 <link href=mailto:work@rafales-mulet.com rel=me>
@@ -51,11 +51,11 @@
 <article class=max-w-prose>
 <header>
 <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
-Load testing the Bloom & Wild Platform for peaks
-      </h1>
+Bisecting flaky tests with rspec and GitHub Actions
+</h1>
 <div class="mt-8 mb-12 text-base text-neutral-500 dark:text-neutral-400">
 <div class="flex flex-row flex-wrap items-center">
-<time datetime="2022-01-18 00:00:00 +0000 UTC">18 January 2022</time>
+<time datetime="2022-08-04 00:00:00 +0000 UTC">4 August 2022</time>
 </div>
 </div>
 </header>
@@ -97,22 +97,13 @@ Bernat Ràfales
 <hr class="border-dotted border-neutral-300 dark:border-neutral-600">
 <div class="flex justify-between pt-3">
 <span>
-<a class=flex href=/articles/2022-08-04-rspec-bisect-github-actions/>
-<span class="mr-3 article-pagination-direction">&larr;</span>
-<span class="flex flex-col">
-<span class="article-pagination-title mt-[0.1rem] leading-6">Bisecting flaky tests with rspec and GitHub Actions</span>
-<span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
-<time datetime="2022-08-04 00:00:00 +0000 UTC">4 August 2022</time>
-</span>
-</span>
-</a>
 </span>
 <span>
-<a class="flex text-right" href=/articles/2021-09-03-building-a-machine-learning-orchestration-platform-part-1/>
+<a class="flex text-right" href=/articles/2022-01-18-load-testing-the-bloom-wild-platform-for-peaks/>
 <span class="flex flex-col">
-<span class="article-pagination-title mt-[0.1rem] leading-6">Building a Machine Learning Orchestration Platform - Part 1</span>
+<span class="article-pagination-title mt-[0.1rem] leading-6">Load testing the Bloom & Wild Platform for peaks</span>
 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
-<time datetime="2021-09-03 00:00:00 +0000 UTC">3 September 2021</time>
+<time datetime="2022-01-18 00:00:00 +0000 UTC">18 January 2022</time>
 </span>
 </span>
 <span class="ml-3 article-pagination-direction">&rarr;</span>
